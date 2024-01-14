@@ -1,0 +1,19 @@
+{
+  "name": "@kary/justifier",
+  "version": "1.0.0",
+  "description": "A justification engine for monospace environments.",
+  "main": "./out/justifier.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "justification",
+    "justify",
+    "monospace",
+    "mono",
+    "monowidth",
+    "text"
+  ],
+  "author": "Pouya Kary",
+  "license": "GPL-3.0-or-later"
+}

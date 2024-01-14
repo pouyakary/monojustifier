@@ -17,10 +17,13 @@ export class MonoJustifier {
     /** The character used to split the chunks */
     #splitHyphen = '-';
 
+    #splitChunkEmptySpaceFactor = 0.75;
+
     // ─── Constructor ─────────────────────────────────────────────────────
 
-    constructor(maxLineSize: number) {
-        this.#maxLineSize = Math.max(10, maxLineSize);
+    constructor(maxLineSize: number, splitChunkEmptySpaceFactor = 0.75) {
+        this.#maxLineSize                = Math.max(10, maxLineSize);
+        this.#splitChunkEmptySpaceFactor = splitChunkEmptySpaceFactor
     }
 
     // ─── Justifier ────────────────────────────────────────────────────────
@@ -158,14 +161,14 @@ export class MonoJustifier {
                     emptySize >= 4 &&
                     // this  one  is a magic number that I have
                     // found on many great trials and errors.
-                    emptyFactor > 0.75
+                    emptyFactor > this.#splitChunkEmptySpaceFactor
                 );
 
                 if (shouldSplitChunk) {
-                    splittedAChunk = true
-                    const [head, tail] = this.#splitChunkInHalf(chunk, emptySize)
+                    splittedAChunk = true;
+                    const [head, tail] = this.#splitChunkInHalf(chunk, emptySize);
                     chunksStack.push(tail);
-                    buffer.push(`${head}${this.#splitHyphen}`)
+                    buffer.push(head + this.#splitHyphen);
                 }
 
                 // Adding  the  results  to  the  lines and

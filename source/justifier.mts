@@ -174,24 +174,21 @@ export class MonoJustifier {
 
                 const shouldSplitChunk = (
                     // we should have at least 3 chunks
-                    chunksStack.length > 3 &&
+                    chunksStack.length > 3
 
                     // we  should  have  enough  characters  to
                     // be breakable
-                    chunk.length >= 6 &&
+                    && chunk.length >= 6
 
                     // we  should  have  also have enough empty
                     // space for the word to fit
-                    emptySize >= 4 &&
+                    && emptySize >= 4
 
                     // this  one  is a magic number that I have
                     // found on many great trials  and  errors.
                     // By  default  set  to  0.75  and  can  be
                     // changed by the user
-                    emptyFactor > this.#splitChunkEmptySpaceFactor &&
-
-                    // the word should be breakable
-                    breakableWordMatcher.test(chunk)
+                    && emptyFactor > this.#splitChunkEmptySpaceFactor
                 );
 
                 if (shouldSplitChunk) {

@@ -2,6 +2,14 @@ import { MonoJustifier } from '../out/justifier.mjs';
 import * as fs           from 'fs';
 import * as path         from 'path';
 
+// ─── Line ──────────────────────────────────────────────────────────────── ✣ ─
+
+function printLine() {
+    console.log('──────────────────────────────────────────────────');
+}
+
+// ─── Getting Cases ─────────────────────────────────────────────────────── ✣ ─
+
 function* getTestCases() {
     const testCasesDirectoryPath = path.join(process.cwd(), 'test', 'cases');
     const testCaseFileNames      = fs.readdirSync(testCasesDirectoryPath);
@@ -12,11 +20,14 @@ function* getTestCases() {
         const partsOfTheCase      = testCaseFileContent.split('---');
 
         yield {
+            name:     fileName,
             given:    partsOfTheCase[0].trim(),
             expected: partsOfTheCase[1].trim(),
         }
     }
 }
+
+// ─── Testing A Case ────────────────────────────────────────────────────── ✣ ─
 
 function testCase(testingCase) {
     const justifier = new MonoJustifier({
@@ -25,16 +36,21 @@ function testCase(testingCase) {
 
     const result = justifier.justifyText(testingCase.given);
 
+    printLine();
+    console.log('Testing', testingCase.name);
+
     if (result == testingCase.expected) {
+        console.log('Successful');
         return true;
     }
     else {
-        console.log('--------------------------------------------');
         console.log(`Failed! Expected:\n${testingCase.expected}`);
         console.log(`\n\nGot:\n${result}`);
         return false;
     }
 }
+
+// ─── Main ──────────────────────────────────────────────────────────────── ✣ ─
 
 main(); function main() {
     let allTestsDone            = 0;
@@ -49,13 +65,15 @@ main(); function main() {
         }
     }
 
-    console.log('--------------------------------------------');
+    console.log('\n');
+    printLine();
     console.log(`${allTestsDone} Tests Done. ${testsPassedSuccessfully} Successful, ${allTestsDone - testsPassedSuccessfully} Failed`);
 
     const successfulExit = allTestsDone == testsPassedSuccessfully;
 
     console.log(`Exiting with ${successfulExit ? 'Success' : 'Failure'}`);
-    console.log('--------------------------------------------\n');
+    printLine();
+    console.log();
 
     process.exitCode = successfulExit ? 0 : 1;
 }

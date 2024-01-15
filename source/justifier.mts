@@ -3,6 +3,8 @@
 export interface IMonoJustifierConstructorOptions {
     /** Maximum number of characters per line */
     maxLineSize: number
+
+    splitChunkEmptySpaceFactor: number | undefined
 }
 
 // ─── Justifier ─────────────────────────────────────────────────────────── ✣ ─
@@ -21,15 +23,24 @@ export class MonoJustifier {
 
     // ─── Constructor ─────────────────────────────────────────────────────
 
-    constructor(maxLineSize: number, splitChunkEmptySpaceFactor = 0.75) {
-        this.#maxLineSize                = Math.max(10, maxLineSize);
-        this.#splitChunkEmptySpaceFactor = splitChunkEmptySpaceFactor
+    constructor(options: IMonoJustifierConstructorOptions) {
+        this.#maxLineSize                = Math.max(10, options.maxLineSize);
+        this.#splitChunkEmptySpaceFactor = options.splitChunkEmptySpaceFactor ?? 0.75;
     }
 
-    // ─── Justifier ────────────────────────────────────────────────────────
+    // ─── Api ─────────────────────────────────────────────────────────────
+
+    /** Justifies a text with multiple lines */
+    public justifyText(input: string): string {
+        const lines              = input.split(/\r?\n/);
+        const justifiedLines     = this.justifyLines(lines);
+        const reconstructedLines = justifiedLines.join('\n');
+
+        return reconstructedLines;
+    }
 
     /** Justifies a set of gives lines to a new set of lines */
-    public justify(input: string[]): string[] {
+    public justifyLines(input: string[]): string[] {
         const chunksStack   = this.#extractChunksStack(input)
         const chunksOnLines = this.#putChunksToLines(chunksStack);
         const spacedChunks  = this.#insertSpaces(chunksOnLines);
@@ -51,12 +62,12 @@ export class MonoJustifier {
         // 'aordinary'.   When  reconstructing  the
         // chunks, we have  to  add  them  together
         // into  their  whole. For that matter; the
-        // `cachedSplittedChunk` works as a  buffer,
-        // if  we find the first half (the head) we
-        // put it in `cachedSplittedChunk` and  then
-        // it  becomes added to anything that comes
+        // `cachedSplitChunk` works as a buffer, if
+        // we find the first half (the head) we put
+        // it in  `cachedSplitChunk`  and  then  it
+        // becomes  added  to  anything  that comes
         // after it.
-        let cachedSplittedChunk = '';
+        let cachedSplitChunk = '';
 
         // We navigate for each line...
         for (const index in lines) {
@@ -68,20 +79,20 @@ export class MonoJustifier {
             // empty.  The  other  rule is for the last
             // chunk in a line, we check if that  chunk
             // is  head  of  a broken chunk and then we
-            // add it to the `cachedSplittedChunk`
+            // add it to the `cachedSplitChunk`
             for (let i = 0; i < lineParts.length; i++) {
                 const chunk = lineParts[i];
 
                 // If  last  chunk of the chunk, try to see
                 // if it was broken.
                 if (i === lineParts.length - 1 && chunk.endsWith(this.#splitHyphen)) {
-                    cachedSplittedChunk = chunk.substring(0, chunk.length - 1);
+                    cachedSplitChunk = chunk.substring(0, chunk.length - 1);
                     continue
                 }
 
                 if (chunk != '') {
-                    chunks.push(cachedSplittedChunk + chunk);
-                    cachedSplittedChunk = '';
+                    chunks.push(cachedSplitChunk + chunk);
+                    cachedSplitChunk = '';
                 }
             }
         }

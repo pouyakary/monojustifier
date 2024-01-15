@@ -1,19 +1,22 @@
 {
-  "name": "@kary/justifier",
-  "version": "1.0.0",
-  "description": "A justification engine for monospace environments.",
-  "main": "./out/justifier.js",
-  "scripts": {
-    "build": "tsc"
-  },
-  "keywords": [
-    "justification",
-    "justify",
-    "monospace",
-    "mono",
-    "monowidth",
-    "text"
-  ],
-  "author": "Pouya Kary",
-  "license": "GPL-3.0-or-later"
+    "author":          "Pouya Kary",
+    "description":     "A justification engine for monospace environments.",
+    "license":         "GPL-3.0-or-later",
+    "main":            "./out/justifier.js",
+    "name":            "@kary/justifier",
+    "type":            "module",
+    "version":         "1.0.0",
+    "scripts": {
+        "clean":       "rm -rf ./out",
+        "build":       "tsc",
+        "test":        "npm run clean; npm run build; node ./test/test.mjs"
+    },
+    "keywords": [
+        "justification",
+        "justify",
+        "monospace",
+        "mono",
+        "monowidth",
+        "text"
+    ]
 }

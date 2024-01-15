@@ -1,0 +1,9 @@
+If all of this checks out to [yes], then
+we have a full new pin. We have to to try
+to check them with the fab server
+and login.
+---
+If  all  of this checks out to [yes], then
+we have a full new pin. We have to to  try
+to   check   them   with  the  fab  server
+and login.

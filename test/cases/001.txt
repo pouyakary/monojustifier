@@ -1,0 +1,20 @@
+In previous attempts of justification we might have broken a
+chunk  into  splits. for  example  the  world 'extraordinary' might have been
+broken into 'extr-'  and 'aordinary'.
+When  reconstructing  the chunks, we have  to  add  them  together
+into  their  whole. For that matter; the `cachedSplitChunk` works as a buffer, if
+we find the first half (the head) we put it in  `cachedSplitChunk`  and  then  it
+becomes  added  to  anything  that comes after it.
+---
+In previous attempts of justification we
+might have broken a chunk  into  splits.
+for  example  the  world 'extraordinary'
+might have been broken into 'extr-'  and
+'aordinary'.   When  reconstructing  the
+chunks, we have  to  add  them  together
+into  their  whole. For that matter; the
+`cachedSplitChunk` works as a buffer, if
+we find the first half (the head) we put
+it in  `cachedSplitChunk`  and  then  it
+becomes  added  to  anything  that comes
+after it.

@@ -20,7 +20,7 @@ function* getTestCases() {
 
 function testCase(testingCase) {
     const justifier = new MonoJustifier({
-        maxLineSize: 40
+        maxLineSize: 42 // because...
     });
 
     const result = justifier.justifyText(testingCase.given);

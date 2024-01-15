@@ -1,0 +1,11 @@
+If  the  server  returns  us  a profile as
+[FabiziProfileEntity], we  are  guaranteed
+access  and  by  setting  the  pins in the
+[authController] we  can  proceed  to  the
+next level in the authentication process.
+---
+If  the  server  returns  us  a profile as
+[FabiziProfileEntity], we  are  guaranteed
+access  and  by  setting  the  pins in the
+[authController] we  can  proceed  to  the
+next  level in the authentication process.

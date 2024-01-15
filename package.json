@@ -5,7 +5,7 @@
     "main":            "./out/justifier.js",
     "name":            "@kary/justifier",
     "type":            "module",
-    "version":         "1.0.0",
+    "version":         "0.0.14",
     "scripts": {
         "clean":       "rm -rf ./out",
         "build":       "tsc",

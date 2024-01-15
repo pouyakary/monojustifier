@@ -7,6 +7,12 @@ export interface IMonoJustifierConstructorOptions {
     splitChunkEmptySpaceFactor: number | undefined
 }
 
+// ─── Regular Expressions ───────────────────────────────────────────────── ✣ ─
+
+const breakableWordMatcher = /^[\p{L}\p{M}]+$/gu;
+const lineBreakMatcher     = /\r?\n/;
+const whiteSpaceMatcher    = /\s+/;
+
 // ─── Justifier ─────────────────────────────────────────────────────────── ✣ ─
 
 export class MonoJustifier {
@@ -32,7 +38,7 @@ export class MonoJustifier {
 
     /** Justifies a text with multiple lines */
     public justifyText(input: string): string {
-        const lines              = input.split(/\r?\n/);
+        const lines              = input.split(lineBreakMatcher);
         const justifiedLines     = this.justifyLines(lines);
         const reconstructedLines = justifiedLines.join('\n');
 
@@ -72,7 +78,7 @@ export class MonoJustifier {
         // We navigate for each line...
         for (const index in lines) {
             const line      = lines[index];
-            const lineParts = line.split(/\s+/);
+            const lineParts = line.split(whiteSpaceMatcher);
 
             // What  we do here is to navigate chunk by
             // chunk and  add  them  if  they  are  not
@@ -167,12 +173,25 @@ export class MonoJustifier {
                 const emptyFactor = emptySize / buffer.length;
 
                 const shouldSplitChunk = (
+                    // we should have at least 3 chunks
                     chunksStack.length > 3 &&
+
+                    // we  should  have  enough  characters  to
+                    // be breakable
                     chunk.length >= 6 &&
+
+                    // we  should  have  also have enough empty
+                    // space for the word to fit
                     emptySize >= 4 &&
+
                     // this  one  is a magic number that I have
-                    // found on many great trials and errors.
-                    emptyFactor > this.#splitChunkEmptySpaceFactor
+                    // found on many great trials  and  errors.
+                    // By  default  set  to  0.75  and  can  be
+                    // changed by the user
+                    emptyFactor > this.#splitChunkEmptySpaceFactor &&
+
+                    // the word should be breakable
+                    breakableWordMatcher.test(chunk)
                 );
 
                 if (shouldSplitChunk) {

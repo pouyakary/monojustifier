@@ -85,6 +85,7 @@ export class MonoJustifier {
             // line, we check if that chunk is head of  a
             // broken   chunk  and  then  we  add  it  to
             // the `cachedSplitChunk`
+
             for (let i = 0; i < lineParts.length; i++) {
                 const chunk = lineParts[i];
 

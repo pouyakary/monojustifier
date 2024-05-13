@@ -1,4 +1,4 @@
-// ─── Helper Types ──────────────────────────────────────────────────────── ✣ ─
+// MARK: Helper Types
 
 export interface IMonoJustifierConstructorOptions {
     /** Maximum number of characters per line */
@@ -7,17 +7,17 @@ export interface IMonoJustifierConstructorOptions {
     splitChunkEmptySpaceFactor: number | undefined
 }
 
-// ─── Regular Expressions ───────────────────────────────────────────────── ✣ ─
+// MARK:  Pre-compiled Regular Expressions
 
 const breakableWordMatcher = /^[\p{L}\p{M}]+$/gu;
-const lineBreakMatcher     = /\r?\n/;
-const whiteSpaceMatcher    = /\s+/;
+const lineBreakMatcher = /\r?\n/;
+const whiteSpaceMatcher = /\s+/;
 
-// ─── Justifier ─────────────────────────────────────────────────────────── ✣ ─
+// MARK: Justifier
 
 export class MonoJustifier {
 
-    // ─── Settings ────────────────────────────────────────────────────────
+    // MARK: Settings
 
     /** Maximum number of characters per line */
     #maxLineSize = 40;
@@ -27,19 +27,19 @@ export class MonoJustifier {
 
     #splitChunkEmptySpaceFactor = 0.75;
 
-    // ─── Constructor ─────────────────────────────────────────────────────
+    // MARK: Constructor
 
     constructor(options: IMonoJustifierConstructorOptions) {
-        this.#maxLineSize                = Math.max(10, options.maxLineSize);
+        this.#maxLineSize = Math.max(10, options.maxLineSize);
         this.#splitChunkEmptySpaceFactor = options.splitChunkEmptySpaceFactor ?? 0.75;
     }
 
-    // ─── Api ─────────────────────────────────────────────────────────────
+    // MARK: Api
 
     /** Justifies a text with multiple lines */
     public justifyText(input: string): string {
-        const lines              = input.split(lineBreakMatcher);
-        const justifiedLines     = this.justifyLines(lines);
+        const lines = input.split(lineBreakMatcher);
+        const justifiedLines = this.justifyLines(lines);
         const reconstructedLines = justifiedLines.join('\n');
 
         return reconstructedLines;
@@ -47,14 +47,14 @@ export class MonoJustifier {
 
     /** Justifies a set of gives lines to a new set of lines */
     public justifyLines(input: string[]): string[] {
-        const chunksStack   = this.#extractChunksStack(input)
+        const chunksStack = this.#extractChunksStack(input)
         const chunksOnLines = this.#putChunksToLines(chunksStack);
-        const spacedChunks  = this.#insertSpaces(chunksOnLines);
+        const spacedChunks = this.#insertSpaces(chunksOnLines);
 
         return spacedChunks;
     }
 
-    // ─── Chunk Extractor ─────────────────────────────────────────────────
+    // MARK: Chunk Extractor
 
     /** Breaks lines into `chunks` */
     #extractChunksStack(lines: string[]): string[] {
@@ -76,7 +76,7 @@ export class MonoJustifier {
 
         // We navigate for each line...
         for (const index in lines) {
-            const line      = lines[index];
+            const line = lines[index];
             const lineParts = line.split(whiteSpaceMatcher);
 
             // What  we  do  here is to navigate chunk by
@@ -114,7 +114,7 @@ export class MonoJustifier {
         return chunks.reverse();
     }
 
-    // ─── Chunk Splitter ──────────────────────────────────────────────────
+    // MARK: Chunk Splitter
 
     #splitChunkInHalf(chunk: string, availableSpace: number): [string, string] {
         // one  char  for  the space to be before the
@@ -131,17 +131,17 @@ export class MonoJustifier {
         return [head, tail];
     }
 
-    // ─── Put Chunks To Lines ─────────────────────────────────────────────
+    // MARK: Put Chunks To Lines
 
     #putChunksToLines(chunksStack: string[]): string[][] {
-        const lines 	    = new Array<Array<string>>()
-        const bufferLength  = (): number => buffer.join(' ').length;
-        let   buffer        = new Array<string>();
+        const lines = new Array<Array<string>>()
+        const bufferLength = (): number => buffer.join(' ').length;
+        let buffer = new Array<string>();
 
         // We  operate on a stack and work as long as
         // it is dirty
         while (chunksStack.length > 0) {
-            const chunk                  = chunksStack.pop()!;
+            const chunk = chunksStack.pop()!;
             const lineSizeWithChunkAdded = bufferLength() + 1 + chunk.length;
 
             // This  is a flag to see if we have splitted
@@ -161,14 +161,15 @@ export class MonoJustifier {
                     + chunk.length
                 );
 
-                // Empty  factor  is how much space is needed
-                // between the  chunks  to  make  the  chunks
-                // exactly  the  max  size.  It only takes to
-                // account the empty size at the end  of  the
-                // line.  Using  it  we  can very much have a
-                // system  that  either  easily   or   hardly
-                // splits chunks.
-                const emptyFactor = emptySize / buffer.length;
+                // Badness  (a  name copied by the exact same
+                // factor in TeX as named  by  master  Donald
+                // Knuth),  is  how  much  space is necessary
+                // between the chunks to  make  them  exactly
+                // the max size. It only takes to account the
+                // empty size at the end of the  line.  Using
+                // it  we  can much have a system that either
+                // easily or hardly splits chunks.
+                const badness = emptySize / buffer.length;
 
                 const shouldSplitChunk = (
                     // we should have at least 3 chunks
@@ -186,7 +187,7 @@ export class MonoJustifier {
                     // found on many great trials and errors.  By
                     // default  set to 0.75 and can be changed by
                     // the user
-                    && emptyFactor > this.#splitChunkEmptySpaceFactor
+                    && badness > this.#splitChunkEmptySpaceFactor
                 );
 
                 if (shouldSplitChunk) {
@@ -233,19 +234,19 @@ export class MonoJustifier {
         return lines;
     }
 
-    // ─── Spacer ──────────────────────────────────────────────────────────
+    // MARK: Spacer
 
     /** Once the chunks are ready */
     #insertSpaces(lines: string[][]) {
         const resultLines = new Array<string>();
 
         for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-            const chunks                  = lines[lineIndex];
-            const spacesNeeded            = chunks.length - 1;
-            const spaces                  = new Array<string>();
+            const chunks = lines[lineIndex];
+            const spacesNeeded = chunks.length - 1;
+            const spaces = new Array<string>();
             const lineLengthWithoutSpaces = chunks.join('').length
-            const emptySpaceSize          = this.#maxLineSize - lineLengthWithoutSpaces;
-            const emptyRatio              = Math.ceil(this.#maxLineSize * 0.15);
+            const emptySpaceSize = this.#maxLineSize - lineLengthWithoutSpaces;
+            const emptyRatio = Math.ceil(this.#maxLineSize * 0.15);
 
             // populate spaces
             for (let j = 0; j < spacesNeeded; j++) {
@@ -263,8 +264,8 @@ export class MonoJustifier {
 
             // Counters
             let insertedSpaces = 0;
-            let counter        = 0;
-            let result         = '';
+            let counter = 0;
+            let result = '';
 
             // This  is basically something like the pig-
             // eon-holes principle. The way it  works  is

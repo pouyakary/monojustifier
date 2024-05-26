@@ -66,11 +66,11 @@ export class MonoJustifier {
         // example  the  world  'extraordinary' might
         // have been broken into 'extr-' and  'aordi-
         // nary'.  When reconstructing the chunks, we
-        // have  to  add  them  together  into  their
-        // whole.  For that matter; the `cachedSplit-
-        // Chunk` works as a buffer, if we  find  the
-        // first  half (the head) we put it in `cach-
-        // edSplitChunk` and then it becomes added to
+        // must add them together into  their  whole.
+        // For  that  matter;  the `cachedSplitChunk`
+        // works as a buffer. If we  find  the  first
+        // half  (the head) we put it in `cachedSpli-
+        // tChunk`  and  then  it  becomes  added  to
         // anything that comes after it.
         let cachedSplitChunk = '';
 
@@ -103,14 +103,14 @@ export class MonoJustifier {
             }
         }
 
-        // One  thing that is remarkable to understa-
-        // nd, is that we use the chunks as an stack.
-        // at  times  we may have to take a chunk and
-        // if it didn't  do  the  purpose,  undo  our
-        // action.  Thus  we  need to work on a stack
-        // and reversing the order of the chunks lets
-        // the  top  of  the stack be the first chunk
-        // that has not yet been justified.
+        // A  remarkable thing to understand, is that
+        // we use the chunks as an stack. at times we
+        // may  have to take a chunk and if it didn't
+        // do the purpose, undo our action.  Thus  we
+        // need  to work on a stack and reversing the
+        // order of the chunks lets the  top  of  the
+        // stack  be the first chunk that has not yet
+        // been justified.
         return chunks.reverse();
     }
 
@@ -267,12 +267,11 @@ export class MonoJustifier {
             let counter = 0;
             let result = '';
 
-            // This  is basically something like the pig-
-            // eon-holes principle. The way it  works  is
-            // inserting  one  single  space  between the
-            // chunks and repeat (and increment the  pre-
-            // vious  spaces)  until  we  have sufficient
-            // spaces added.
+            // This  is  something  like the pigeon-holes
+            // principle. The way it works  is  inserting
+            // one  single  space  between the chunks and
+            // repeat (and increment the previous spaces)
+            // until we have sufficient spaces added.
 
             while (insertedSpaces++ < emptySpaceSize) {
                 spaces[counter++ % spacesNeeded] += ' ';

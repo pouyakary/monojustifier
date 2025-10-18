@@ -38,11 +38,16 @@ export class MonoJustifier {
 
     /** Justifies a text with multiple lines */
     public justifyText(input: string): string {
-        const lines = input.split(lineBreakMatcher);
-        const justifiedLines = this.justifyLines(lines);
-        const reconstructedLines = justifiedLines.join('\n');
+        const paragraphs = this.#splitIntoParagraphs(input);
 
-        return reconstructedLines;
+        if (paragraphs.length === 0) {
+            return '';
+        }
+
+        const justifiedParagraphs = paragraphs
+            .map((paragraphLines) => this.justifyLines(paragraphLines).join('\n'));
+
+        return justifiedParagraphs.join('\n\n');
     }
 
     /** Justifies a set of gives lines to a new set of lines */
@@ -52,6 +57,32 @@ export class MonoJustifier {
         const spacedChunks = this.#insertSpaces(chunksOnLines);
 
         return spacedChunks;
+    }
+
+    /** Splits the input into logical paragraphs */
+    #splitIntoParagraphs(input: string): string[][] {
+        const lines = input.split(lineBreakMatcher);
+        const paragraphs = new Array<Array<string>>();
+        let currentParagraph = new Array<string>();
+
+        const flushParagraph = () => {
+            if (currentParagraph.length > 0) {
+                paragraphs.push(currentParagraph);
+                currentParagraph = new Array<string>();
+            }
+        };
+
+        for (const line of lines) {
+            if (line.trim().length === 0) {
+                flushParagraph();
+                continue;
+            }
+
+            currentParagraph.push(line);
+        }
+
+        flushParagraph();
+        return paragraphs;
     }
 
     // MARK: Chunk Extractor
